@@ -1,0 +1,39 @@
+{
+  "name": "mongo-migration",
+  "version": "0.0.1",
+  "description": "A simple migration to keep book over mongo database changes",
+  "main": "migration.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sakulstra/mongo-migration.git"
+  },
+  "keywords": [
+    "mongodb",
+    "migration"
+  ],
+  "author": "Lukas Strassel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sakulstra/mongo-migration/issues"
+  },
+  "homepage": "https://github.com/sakulstra/mongo-migration#readme",
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.47",
+    "@babel/preset-env": "^7.0.0-beta.47",
+    "@babel/preset-stage-2": "^7.0.0-beta.47",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^22.4.3",
+    "jest": "^22.4.3",
+    "regenerator-runtime": "^0.11.1"
+  },
+  "dependencies": {
+    "md5": "^2.2.1",
+    "mongodb": "^3.1.0-beta4"
+  }
+}
