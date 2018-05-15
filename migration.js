@@ -8,7 +8,7 @@ Array.prototype.unique = function() {
   });
 };
 
-class Migration {
+export default class Migration {
   migrationFiles = [];
   currentMigrationStatus = [];
   /**
@@ -105,7 +105,7 @@ class Migration {
           continue;
         }
         const r = await this.migrationFiles[i].migration.up(this.db);
-        await this._processResult(this.migrationFiles[i], i, r);
+        await this._processResult(this.migrationFiles[i], i);
         results.push({ id: this.migrationFiles[i].migration.id, status: 'success', result: r });
       } catch (e) {
         results.push({ id: this.migrationFiles[i].migration.id, status: 'error', error: e });
@@ -129,9 +129,7 @@ class Migration {
     return await this._refreshMigrationCollection();
   }
 
-  quit() {
-    this.client.close();
+  async quit() {
+    await this.client.close();
   }
 }
-
-export { Migration };

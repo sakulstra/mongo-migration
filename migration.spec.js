@@ -1,5 +1,5 @@
 import path from 'path';
-import { Migration } from './migration';
+import Migration from './migration';
 import { MongoClient } from 'mongodb';
 
 const TEST_DB = 'migrationTest';
@@ -145,8 +145,7 @@ describe('Migration', () => {
     expect(result[1].status).toEqual('error');
   });
 
-  afterAll(async () => {
-    await testClient.db(TEST_DB).dropDatabase();
+  afterAll(() => {
     migration.quit();
   });
 });
