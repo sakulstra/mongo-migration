@@ -10,6 +10,7 @@ cache:
   directories:
     - "node_modules"
 install:
+  - npm install
   - npm install -g codecov
 scripts:
   - npm run test
