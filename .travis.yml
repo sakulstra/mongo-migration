@@ -2,7 +2,6 @@ language: node_js
 services:
     - mongodb
 node_js:
-    - 6
     - 8
     - 10
 git:
@@ -10,3 +9,8 @@ git:
 cache:
   directories:
     - "node_modules"
+install:
+  - npm install -g codecov
+scripts:
+  - npm run test
+  - covecov
