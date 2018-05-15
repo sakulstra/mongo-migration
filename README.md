@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/sakulstra/mongo-migration.svg?branch=master)](https://travis-ci.com/sakulstra/mongo-migration)
+[![codecov](https://codecov.io/gh/sakulstra/mongo-migration/branch/master/graph/badge.svg)](https://codecov.io/gh/sakulstra/mongo-migration)
 ## mongodb-migrations
 
 ### Why?

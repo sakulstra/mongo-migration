@@ -12,6 +12,6 @@ cache:
 install:
   - npm install
   - npm install -g codecov
-scripts:
+script:
   - npm run test
-  - covecov
+  - covdecov
