@@ -1,11 +1,11 @@
-import {MongoClient} from 'mongodb';
+import { MongoClient } from "mongodb";
 
 class Migration {
   files = [];
   dbConfig = {
-    url: 'mongodb://localhost/',
-    database: 'migrationTest',
-    migrationCollection: 'migrations'
+    url: "mongodb://localhost/",
+    database: "migrationTest",
+    migrationCollection: "migrations"
   };
 
   constructor(dbConfig) {
@@ -14,7 +14,7 @@ class Migration {
 
   addFile(filePath) {
     const migration = require(filePath).default;
-    this.files.push(migration)
+    this.files.push(migration);
   }
 
   async migrate() {
@@ -27,13 +27,13 @@ class Migration {
     for (let i = 0; i < this.files.length; i++) {
       try {
         const result = await this.files[i].up(db);
-        results.push({id: this.files[i].id, status: 'success'});
-      } catch(e) {
-        results.push({id: this.files[i].id, status: 'error'});
+        results.push({ id: this.files[i].id, status: "success" });
+      } catch (e) {
+        results.push({ id: this.files[i].id, status: "error" });
       }
     }
     // disconnect
-    client.close();
+    await client.close(true);
     return results;
   }
 }
