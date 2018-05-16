@@ -14,10 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/sakulstra/mongo-migration.git"
   },
-  "keywords": [
-    "mongodb",
-    "migration"
-  ],
+  "keywords": ["mongodb", "migration"],
   "author": "Lukas Strassel",
   "license": "MIT",
   "bugs": {
@@ -30,6 +27,7 @@
     "@babel/preset-stage-2": "^7.0.0-beta.47",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^22.4.3",
+    "husky": "^0.14.3",
     "jest": "^22.4.3",
     "lint-staged": "^7.1.0",
     "prettier": "^1.12.1",
