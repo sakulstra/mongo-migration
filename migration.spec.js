@@ -98,7 +98,7 @@ describe('Migration', () => {
     });
   });
 
-  test('to thow when checksum changed', async () => {
+  test('to throw when checksum changed', async () => {
     migration.addMigration(path.join(__dirname, './tests/1.js'));
     await migration.migrate();
     const migration2 = new Migration({
