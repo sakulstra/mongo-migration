@@ -46,19 +46,26 @@ class Migration {
           results.push({ id: currentFile.id, status: "success" });
           await migrationsCollection.insertOne({
             id: currentFile.id,
-            checksum: currentFile.checksum
+            checksum: currentFile.checksum,
+            order: i
           });
         } else {
-          // old migration and file didn't change
-          if (currentFile.checksum === migrationStatus[0].checksum) {
-            results.push({ id: currentFile.id, status: "skipped" });
-          } else {
+          if (currentFile.checksum !== migrationStatus[0].checksum) {
             results.push({
               id: currentFile.id,
               status: "error",
               type: "checksum-mismatch"
             });
             return results;
+          } else if (i !== migrationStatus[0].order) {
+            results.push({
+              id: currentFile.id,
+              status: "error",
+              type: "order-mismatch"
+            });
+            return results;
+          } else {
+            results.push({ id: currentFile.id, status: "skipped" });
           }
         }
       } catch (e) {
