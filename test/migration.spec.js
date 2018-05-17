@@ -8,12 +8,17 @@ const testConfig = {
   migrationCollection: "migrations"
 };
 
+let client = null;
+let db = null;
+
 describe("migration", () => {
+  beforeAll(async () => {
+    client = await MongoClient.connect(testConfig.url);
+  });
+
   beforeEach(async () => {
-    const client = await MongoClient.connect(testConfig.url);
-    const db = client.db(testConfig.database);
+    db = client.db(testConfig.database);
     await db.dropDatabase();
-    await client.close(true);
   });
 
   test("can add a file", () => {
@@ -76,5 +81,18 @@ describe("migration", () => {
     expect(result[0].status).toBe("error");
     expect(result[0].id).toBe("b");
     expect(result[0].type).toBe("order-mismatch");
+  });
+
+  test("executes down function on error", async () => {
+    const testMigration = new Migration(testConfig);
+    testMigration.addFile(path.join(__dirname, "./migrations/fail.js"));
+    const result = await testMigration.migrate();
+    expect(result).toHaveLength(1);
+    expect(result[0].status).toBe("error");
+    expect(result[0].id).toBe("b");
+  });
+
+  afterAll(async () => {
+    await client.close(true);
   });
 });

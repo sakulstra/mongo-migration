@@ -24,14 +24,11 @@ class Migration {
     this.files.push(migration);
   }
 
-  async migrate() {
-    // connect
-    const client = await MongoClient.connect(this.dbConfig.url);
+  async _migrate(client) {
     const db = client.db(this.dbConfig.database);
     const migrationsCollection = db.collection(
       this.dbConfig.migrationCollection
     );
-
     const results = [];
     // migrate
     for (let i = 0; i < this.files.length; i++) {
@@ -72,8 +69,17 @@ class Migration {
         results.push({ id: currentFile.id, status: "error" });
       }
     }
+    return results;
+  }
+
+  async migrate() {
+    // connect
+    const client = await MongoClient.connect(this.dbConfig.url);
+    // migrate
+    const results = await this._migrate(client);
     // disconnect
     await client.close(true);
+    // exit
     return results;
   }
 }
