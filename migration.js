@@ -24,6 +24,10 @@ class Migration {
     this.files.push(migration);
   }
 
+  addFiles(filePaths) {
+    filePaths.forEach(filePath => this.addFile(filePath));
+  }
+
   async _migrate(client) {
     const db = client.db(this.dbConfig.database);
     const migrationsCollection = db.collection(

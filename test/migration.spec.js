@@ -28,6 +28,17 @@ describe("migration", () => {
     expect(testMigration.files[0].id).toBe("a");
   });
 
+  test("can add multiple files at once", () => {
+    const testMigration = new Migration();
+    testMigration.addFiles([
+      path.join(__dirname, "./migrations/a.js"),
+      path.join(__dirname, "./migrations/b.js")
+    ]);
+    expect(testMigration.files).toHaveLength(2);
+    expect(testMigration.files[0].id).toBe("a");
+    expect(testMigration.files[1].id).toBe("b");
+  });
+
   test("can run migrations", async () => {
     const testMigration = new Migration(testConfig);
     testMigration.addFile(path.join(__dirname, "./migrations/a.js"));
