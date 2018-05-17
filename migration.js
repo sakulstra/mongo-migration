@@ -66,7 +66,18 @@ class Migration {
           }
         }
       } catch (e) {
-        results.push({ id: currentFile.id, status: "error" });
+        try {
+          const result = currentFile.down && (await currentFile.down(db));
+        } catch (e) {
+          results.push({
+            id: currentFile.id,
+            status: "error",
+            type: "rollback"
+          });
+          return results;
+        }
+        results.push({ id: currentFile.id, status: "error", type: "mongo" });
+        return results;
       }
     }
     return results;

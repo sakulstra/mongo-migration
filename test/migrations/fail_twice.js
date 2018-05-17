@@ -7,6 +7,9 @@ export default {
       .update({ a: { $foo: "2" } }, { $set: { a: "bar" } });
   },
   down: async db => {
-    return await db.collection("test").remove({});
+    await db.collection("test").remove({});
+    return await db
+      .collection("test")
+      .update({ a: { $foo: "2" } }, { $set: { a: "bar" } });
   }
 };

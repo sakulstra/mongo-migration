@@ -89,7 +89,28 @@ describe("migration", () => {
     const result = await testMigration.migrate();
     expect(result).toHaveLength(1);
     expect(result[0].status).toBe("error");
+    expect(result[0].type).toBe("mongo");
     expect(result[0].id).toBe("b");
+    const testData = await db
+      .collection("test")
+      .find({})
+      .toArray();
+    expect(testData).toHaveLength(0);
+  });
+
+  test("executes down function on error", async () => {
+    const testMigration = new Migration(testConfig);
+    testMigration.addFile(path.join(__dirname, "./migrations/fail_twice.js"));
+    const result = await testMigration.migrate();
+    expect(result).toHaveLength(1);
+    expect(result[0].status).toBe("error");
+    expect(result[0].type).toBe("rollback");
+    expect(result[0].id).toBe("b");
+    const testData = await db
+      .collection("test")
+      .find({})
+      .toArray();
+    expect(testData).toHaveLength(0);
   });
 
   afterAll(async () => {
