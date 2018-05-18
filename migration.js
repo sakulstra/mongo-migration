@@ -34,12 +34,13 @@ class Migration {
       this.dbConfig.migrationCollection
     );
     const results = [];
+    // TODO: it wouldn't hurt to preflight check this
     // migrate
     for (let i = 0; i < this.files.length; i++) {
       const currentFile = this.files[i];
       try {
         const migrationStatus = await migrationsCollection
-          .find({ id: currentFile.id })
+          .find({ id: currentFile.id, removed: { $ne: true } })
           .toArray();
         // it's a new migration yay
         if (migrationStatus.length === 0) {
@@ -48,7 +49,8 @@ class Migration {
           await migrationsCollection.insertOne({
             id: currentFile.id,
             checksum: currentFile.checksum,
-            order: i
+            order: i,
+            createdAt: new Date()
           });
         } else {
           if (currentFile.checksum !== migrationStatus[0].checksum) {
@@ -70,15 +72,23 @@ class Migration {
           }
         }
       } catch (e) {
-        try {
-          const result = currentFile.down && (await currentFile.down(db));
-        } catch (e) {
-          results.push({
-            id: currentFile.id,
-            status: "error",
-            type: "rollback"
-          });
-          return results;
+        if (currentFile.down) {
+          try {
+            const result = await currentFile.down(db);
+            results.push({
+              id: currentFile.id,
+              status: "error",
+              type: "rollback-success"
+            });
+            return results;
+          } catch (e) {
+            results.push({
+              id: currentFile.id,
+              status: "error",
+              type: "rollback-error"
+            });
+            return results;
+          }
         }
         results.push({ id: currentFile.id, status: "error", type: "mongo" });
         return results;
@@ -92,6 +102,53 @@ class Migration {
     const client = await MongoClient.connect(this.dbConfig.url);
     // migrate
     const results = await this._migrate(client);
+    // disconnect
+    await client.close(true);
+    // exit
+    return results;
+  }
+
+  async _cleanup(client) {
+    const db = client.db(this.dbConfig.database);
+    const migrationsCollection = db.collection(
+      this.dbConfig.migrationCollection
+    );
+    // TODO: it wouldn't hurt to preflight check this
+    const migrationIds = this.files.map(file => file.id);
+    await migrationsCollection.update(
+      { id: { $nin: migrationIds } },
+      { $set: { removed: true } },
+      { multi: true }
+    );
+    for (let i = 0; i < this.files.length; i++) {
+      const currentFile = this.files[i];
+      const migration = await migrationsCollection.findOne({
+        id: currentFile.id,
+        removed: { $ne: true }
+      });
+      if (migration) {
+        await migrationsCollection.update(
+          { id: currentFile.id, removed: { $ne: true } },
+          {
+            $set: {
+              updatedAt: new Date(),
+              checksum: currentFile.checksum,
+              order: i
+            }
+          }
+        );
+      }
+    }
+    return await migrationsCollection
+      .find({ removed: { $ne: true } })
+      .toArray();
+  }
+
+  async cleanup() {
+    // connect
+    const client = await MongoClient.connect(this.dbConfig.url);
+    // migrate
+    const results = await this._cleanup(client);
     // disconnect
     await client.close(true);
     // exit

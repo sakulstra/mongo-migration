@@ -100,7 +100,7 @@ describe("migration", () => {
     const result = await testMigration.migrate();
     expect(result).toHaveLength(1);
     expect(result[0].status).toBe("error");
-    expect(result[0].type).toBe("mongo");
+    expect(result[0].type).toBe("rollback-success");
     expect(result[0].id).toBe("b");
     const testData = await db
       .collection("test")
@@ -115,13 +115,45 @@ describe("migration", () => {
     const result = await testMigration.migrate();
     expect(result).toHaveLength(1);
     expect(result[0].status).toBe("error");
-    expect(result[0].type).toBe("rollback");
+    expect(result[0].type).toBe("rollback-error");
     expect(result[0].id).toBe("b");
     const testData = await db
       .collection("test")
       .find({})
       .toArray();
     expect(testData).toHaveLength(0);
+  });
+
+  test("cleanup removes outdated migrations and fakes the order and refreshes the hash", async () => {
+    const testMigration1 = new Migration(testConfig);
+    testMigration1.addFile(path.join(__dirname, "./migrations/a.js"));
+    testMigration1.addFile(path.join(__dirname, "./migrations/b.js"));
+    await testMigration1.migrate();
+    const testMigration2 = new Migration(testConfig);
+    testMigration2.addFile(path.join(__dirname, "./migrations/b.js"));
+    testMigration2.addFile(path.join(__dirname, "./migrations/c.js"));
+    const result = await testMigration2.cleanup();
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe("b");
+    expect(result[0].order).toBe(0);
+  });
+
+  test("not quite sure what should happen here", async () => {
+    const testMigration1 = new Migration(testConfig);
+    testMigration1.addFile(path.join(__dirname, "./migrations/a.js"));
+    testMigration1.addFile(path.join(__dirname, "./migrations/c.js"));
+    await testMigration1.migrate();
+    const testMigration2 = new Migration(testConfig);
+    testMigration2.addFile(path.join(__dirname, "./migrations/a.js"));
+    testMigration2.addFile(path.join(__dirname, "./migrations/b.js"));
+    testMigration2.addFile(path.join(__dirname, "./migrations/c.js"));
+    const result = await testMigration2.cleanup();
+    expect(result).toHaveLength(2);
+    expect(result[0].id).toBe("a");
+    expect(result[0].order).toBe(0);
+    // the gap here is the expected behavior
+    expect(result[1].id).toBe("c");
+    expect(result[1].order).toBe(2);
   });
 
   afterAll(async () => {

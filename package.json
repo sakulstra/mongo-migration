@@ -1,8 +1,16 @@
 {
-  "name": "tdd",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "mongo-migration",
+  "version": "0.0.1",
+  "description": "A simple migration to keep book over mongo database changes",
+  "main": "migration.js",
+  "bugs": {
+    "url": "https://github.com/sakulstra/mongo-migration/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sakulstra/mongo-migration.git"
+  },
+  "keywords": ["mongodb", "migration"],
   "dependencies": {
     "md5": "^2.2.1",
     "mongodb": "^3.1.0-beta4"
@@ -20,9 +28,9 @@
     "regenerator-runtime": "^0.11.1"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --ci --coverage",
     "precommit": "pretty-quick --staged"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Lukas Strassel",
+  "license": "MIT"
 }
