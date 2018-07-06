@@ -10,20 +10,23 @@
     "type": "git",
     "url": "git+https://github.com/sakulstra/mongo-migration.git"
   },
-  "keywords": ["mongodb", "migration"],
+  "keywords": [
+    "mongodb",
+    "migration"
+  ],
   "dependencies": {
     "md5": "^2.2.1",
-    "mongodb": "^3.1.0-beta4"
+    "mongodb": "^3.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.47",
-    "@babel/preset-env": "^7.0.0-beta.47",
-    "@babel/preset-stage-2": "^7.0.0-beta.47",
+    "@babel/core": "^7.0.0-beta.52",
+    "@babel/preset-env": "^7.0.0-beta.52",
+    "@babel/preset-stage-2": "^7.0.0-beta.52",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.0.0",
     "husky": "^0.14.3",
-    "jest": "^22.4.3",
-    "prettier": "^1.12.1",
+    "jest": "^22.4.4",
+    "prettier": "^1.13.7",
     "pretty-quick": "^1.4.1",
     "regenerator-runtime": "^0.12.0"
   },
