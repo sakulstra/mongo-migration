@@ -51,6 +51,18 @@ describe("migration", () => {
     expect(result[1].id).toBe("b");
   });
 
+  test("can run callback migrations", async () => {
+    const testMigration = new Migration(testConfig);
+    testMigration.addFile(path.join(__dirname, "./migrations/a_callback.js"));
+    testMigration.addFile(path.join(__dirname, "./migrations/b.js"));
+    const result = await testMigration.migrate();
+    expect(result).toHaveLength(2);
+    expect(result[0].status).toBe("success");
+    expect(result[0].id).toBe("a_callback");
+    expect(result[1].status).toBe("success");
+    expect(result[1].id).toBe("b");
+  });
+
   test("skipps already migrated migrations", async () => {
     const testMigration1 = new Migration(testConfig);
     testMigration1.addFile(path.join(__dirname, "./migrations/a.js"));

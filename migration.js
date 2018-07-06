@@ -15,7 +15,7 @@ class Migration {
   }
 
   addFile(filePath) {
-    const migration = require(filePath).default;
+    const migration = require(filePath);
     const content = fs.readFileSync(filePath, { encoding: "utf8" });
     // when windows and linux users are running migrations on the same db there's a good chance the content hash will return different results as \n is transformed to \r\n
     // so let's just remove the \r to save us some struggle
@@ -44,7 +44,15 @@ class Migration {
           .toArray();
         // it's a new migration yay
         if (migrationStatus.length === 0) {
-          const result = await currentFile.up(db);
+          await new Promise((resolve, reject) => {
+            const result = currentFile.up(db, (error, result) => {
+              if (error) return reject(error);
+              return resolve(result);
+            });
+            if (result && result.then) {
+              result.then(resolve).catch(reject);
+            }
+          });
           results.push({ id: currentFile.id, status: "success" });
           await migrationsCollection.insertOne({
             id: currentFile.id,
@@ -90,6 +98,7 @@ class Migration {
             return results;
           }
         }
+        console.log(e);
         results.push({ id: currentFile.id, status: "error", type: "mongo" });
         return results;
       }

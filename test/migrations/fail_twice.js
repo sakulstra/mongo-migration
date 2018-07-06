@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   id: "b",
   up: async db => {
     await db.collection("test").insert({ a: 42 });
