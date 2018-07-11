@@ -82,7 +82,7 @@ class Migration {
       } catch (e) {
         if (currentFile.down) {
           try {
-            const result = await currentFile.down(db);
+            await currentFile.down(db);
             results.push({
               id: currentFile.id,
               status: "error",
@@ -98,8 +98,8 @@ class Migration {
             return results;
           }
         }
-        console.log(e);
         results.push({ id: currentFile.id, status: "error", type: "mongo" });
+        console.log(e);
         return results;
       }
     }
@@ -117,6 +117,13 @@ class Migration {
     return results;
   }
 
+  /**
+   * 1. removes migrations with files not existing any more
+   * 2. updates the remaining files checksum and sort index
+   * @param client
+   * @returns {Promise<*>}
+   * @private
+   */
   async _cleanup(client) {
     const db = client.db(this.dbConfig.database);
     const migrationsCollection = db.collection(
