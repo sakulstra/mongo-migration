@@ -3,14 +3,16 @@ const md5 = require("md5");
 const MongoClient = require("mongodb").MongoClient;
 
 class Migration {
-  files = [];
-  dbConfig = {
-    url: "mongodb://localhost/",
-    database: "migrationTest",
-    migrationCollection: "migrations"
-  };
-
+  /**
+   * dbConfig = {
+   * url: "mongodb://localhost/",
+   * database: "migrationTest",
+   * migrationCollection: "migrations"
+   * };
+   * @param dbConfig
+   */
   constructor(dbConfig) {
+    this.files = [];
     this.dbConfig = dbConfig;
   }
 
