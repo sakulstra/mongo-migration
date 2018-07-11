@@ -1,6 +1,6 @@
-import path from "path";
-import { MongoClient } from "mongodb";
-import Migration from "../migration";
+const path = require("path");
+const MongoClient = require("mongodb").MongoClient;
+const Migration = require("../migration");
 
 const testConfig = {
   url: "mongodb://localhost/",
