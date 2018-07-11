@@ -1,6 +1,6 @@
-import fs from "fs";
-import md5 from "md5";
-import { MongoClient } from "mongodb";
+const fs = require("fs");
+const md5 = require("md5");
+const MongoClient = require("mongodb").MongoClient;
 
 class Migration {
   files = [];
@@ -172,4 +172,4 @@ class Migration {
   }
 }
 
-export default Migration;
+module.exports = Migration;
