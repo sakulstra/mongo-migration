@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "md5": "^2.2.1",
-    "mongodb": "^3.2.7"
+    "mongodb": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
